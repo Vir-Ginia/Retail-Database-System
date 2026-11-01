@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDEA Homepage</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #fff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        #logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #logo {
+            font-size: 72px;
+            font-family: 'Helvetica', sans-serif;
+            color: #4285F4;
+        }
+        #slogan {
+            font-size: 24px;
+            color: #555;
+        }
+        .bar {
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+            width: 60%;
+            justify-content: space-around;
+        }
+        .button {
+            border: none;
+            padding: 10px 20px;
+            background-color: #f8f9fa;
+            border-radius: 20px;
+            text-decoration: none;
+            color: black;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        .button:hover {
+            background-color: #e8e8e8;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .search-bar {
+            width: 80%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #dfe1e5;
+            border-radius: 24px;
+        }
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+            border-top: 1px solid #eee;
+            padding: 10px;
+            background: #f2f2f2;
+        }
+        .search-button {
+            background-color: #4285F4;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div id="logo-container">
+        <div id="logo" style="font-size: 400px;">I.D.E.A</div>
+        <div id="slogan" style="font-size: 16px;">INTERIOR DECORATIVE ERGONOMIC APPLICATION</div>
+    </div>
+    <div class="bar">
+        <a href="Home.html" class="button">Homepage</a>
+        <a href="1Customer.php" class="button">Customer</a>
+        <a href="2Supplier.php" class="button">Supplier</a>
+        <a href="3Store.php" class="button">Store</a>
+        <a href="4Employee.php" class="button">Employee</a>
+        <a href="5Product.php" class="button">Product</a>
+        <a href="6Purchase.php" class="button">Purchase</a>
+        <a href="7Delivery.php" class="button">Delivery</a>
+        <a href="8Collection.php" class="button">Collection</a>
+    </div>
+    
+    <!--Search form added below the slogan-->
+    <form action="search.php" method="get">
+        <input type="text" class="search-bar" name="search" placeholder="Search the database..." style="width: 1200px;">
+        <input type="submit" class="search-button button" value="IDEA Search">
+    </form>
+    <div class="footer">
+        ©2024 IDEA - Admin reserved.
+    </div>
+</body>
+</html>
+
+

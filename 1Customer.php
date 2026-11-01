@@ -1,0 +1,207 @@
+
+<?php
+$connection=oci_connect(getenv('ORACLE_USER'), getenv('ORACLE_PASSWORD'), getenv('ORACLE_CONNECTION_STRING'));
+//Checking if the connection was successful
+if ($connection) {
+    // search from the GET request
+    $search=isset($_GET['search']) ? htmlspecialchars(strtoupper($_GET['search']),ENT_QUOTES) : '';
+    // Retrieveing the selected search column from the GET request, default to 'Customer_no' if not set
+    $search_column=isset($_GET['search_column']) ? $_GET['search_column']:'Customer_no';
+    // Retrieveinng sorting preferences
+    $sort=isset($_GET['sort']) ? $_GET['sort'] : 'Customer_no';
+    
+    switch ($sort) {
+        case 'name_asc':
+            $order_by="ORDER BY Customer_name ASC"; // Sorting by customer name in ascending order
+            break;
+        case 'name_desc':
+            $order_by="ORDER BY Customer_name DESC"; // Sorting by customer name in descending order
+            break;
+        default:
+            $order_by = "ORDER BY $search_column ASC"; // Default sort order based on the selected search column
+    }
+    // Prepareing the SQL query
+    $sql="SELECT * FROM Customer WHERE UPPER($search_column) LIKE '%" . $search . "%' $order_by";
+    // Parse and execute the SQL query
+    $statement = oci_parse($connection, $sql);
+    if (!oci_execute($statement)) {
+        $e = oci_error($statement);
+        echo htmlentities($e['message'], ENT_QUOTES); // Displaying any error message from Oracle
+        echo "<br>SQL execution failed.<br>\n"; // Notify about SQL execution failure
+    }
+} else {
+    $e = oci_error($connection);
+    echo htmlentities($e['message'], ENT_QUOTES); // Displaying any error message from Oracle
+    echo "Connection failed.<br>\n"; // Notifying about connection failure
+}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customers</title>
+    <style>
+      
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #left-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 200px;
+            padding: 20px;
+            height: 100vh;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: #ffffff;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+            z-index: 999;
+        }
+        #left-sidebar h3 {
+            color: #003366;
+            margin-top: 0;
+        }
+        #left-sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        #left-sidebar ul li a {
+            display: block;
+            padding: 10px;
+            color: #003366;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        #left-sidebar ul li a:hover {
+            background-color: #ddd;
+        }
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin-top: 20px;
+            box-shadow: 0 12px 16px rgba(0,0,0,0.2);
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-right: 1px solid #ddd;
+            color: #666;
+        }
+        th {
+            background-color: #003366;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:nth-child(odd) {
+            background-color: #fff;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        form {
+            text-align: center;
+            padding-top: 20px;
+            margin-left: 220px;
+        }
+        input[type="text"], input[type="submit"] {
+            padding: 10px;
+            margin-right: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+        input[type="submit"] {
+            cursor: pointer;
+            background-color: #007BFF;
+            color: white;
+            border-color: #007BFF;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        h1 {
+            text-align: center;
+            color: #003366;
+        }
+    </style> <!-- End of CSS style block -->
+</head>
+<body>
+    <div id="left-sidebar">
+        <h3>Navigation</h3>
+        <ul>
+            <li><a href="Home.html">Home</a></li>
+            <li><a href="1Customer.php">Customers</a></li>
+            <li><a href="5Product.php">Products</a></li>
+            <li><a href="2Supplier.php">Suppliers</a></li>
+            <li><a href="4Employee.php">Employees</a></li>
+            <li><a href="3Store.php">Stores</a></li>
+            <li><a href="6Purchase.php">Purchases</a></li>
+            <li><a href="7Delivery.php">Deliveries</a></li>
+            <li><a href="8Collection.php">Collections</a></li>
+        </ul>
+    </div>
+    <div>
+        <h1>Customer Information</h1>
+        <form method="get">
+            <input type="text" id="search" name="search" placeholder="Enter Customer information..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search'], ENT_QUOTES) : ''; ?>">
+            <select name="search_column">
+                <option value="Customer_no" <?php echo $search_column == 'Customer_no' ? 'selected' : ''; ?>>Customer Number</option>
+                <option value="Customer_name" <?php echo $search_column == 'Customer_name' ? 'selected' : ''; ?>>Customer Name</option>
+                <option value="Email" <?php echo $search_column == 'Email' ? 'selected' : ''; ?>>Email</option>
+                <option value="Phone" <?php echo $search_column == 'Phone' ? 'selected' : ''; ?>>Phone</option>
+                <option value="Customer_address" <?php echo $search_column == 'Customer_address' ? 'selected' : ''; ?>>Customer_address</option>
+                <option value="Last_four_cardNumbers" <?php echo $search_column == 'Last_four_cardNumbers' ? 'selected' : ''; ?>>Last_four_cardNumbers</option>
+
+            </select>
+            </select>
+            <select name="sort">
+                <option value="Customer_no">Default</option>
+                <option value="name_asc" <?php echo $sort == 'name_asc' ? 'selected' : ''; ?>>Name A to Z</option>
+                <option value="name_desc" <?php echo $sort == 'name_desc' ? 'selected' : ''; ?>>Name Z to A</option>
+            </select>
+            <input type="submit" value="Search">
+        </form>
+        <?php if (isset($statement) && $statement) : ?>
+            <table>
+            <tr>
+            <?php
+            $numcols = oci_num_fields($statement);
+            for ($i = 1; $i <= $numcols; $i++) {
+                $colname = oci_field_name($statement, $i);
+                echo "<th>$colname</th>";
+            }
+            echo "</tr>";
+            while ($row = oci_fetch_array($statement, OCI_ASSOC + OCI_RETURN_NULLS)) {
+                echo "<tr>";
+                foreach ($row as $item) {
+                    echo "<td>" . ($item !== null ? htmlentities($item, ENT_QUOTES) : "&nbsp;") . "</td>";
+                }
+                echo "</tr>";
+            }
+            ?>
+            </table>
+        <?php
+        oci_free_statement($statement);
+        oci_close($connection);
+        endif; ?>
+    </div>
+</body>
+</html>
+
+
+
+
